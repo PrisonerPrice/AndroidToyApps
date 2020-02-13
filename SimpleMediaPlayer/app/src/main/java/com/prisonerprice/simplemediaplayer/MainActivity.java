@@ -28,16 +28,17 @@ public class MainActivity extends AppCompatActivity {
         player = new SimpleExoPlayer.Builder(this).build();
         PlayerView playerView = new PlayerView(this);
         playerView.setPlayer(player);
+        player.setPlayWhenReady(true);
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "SimpleMediaPlayer"));
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse("android.resources://com.prisonerprice.simplemediaplayer/raw/demo"));
+                .createMediaSource(Uri.parse("asset:///canon_in_d.mp3"));
         player.prepare(mediaSource);
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         player.release();
     }
 }
