@@ -1,10 +1,15 @@
-// Reference: https://developer.android.com/training/notify-user/build-notification
+// References:
+// https://developer.android.com/training/notify-user/build-notification
+// https://developer.android.com/topic/libraries/architecture/workmanager/basics
 
 package com.prisonerprice.simplenotification;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,11 +19,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 
+import java.util.concurrent.TimeUnit;
+
 import static android.app.Notification.EXTRA_NOTIFICATION_ID;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button basicNotificationBtn;
+    private Button scheduledNotificationBtn;
     private final static String CHANNEL_ID = "CHANNEL_ID";
     public final static String ACTION_SNOOZE = "ACTION_SNOOZE";
 
@@ -31,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         basicNotificationBtn = findViewById(R.id.basic_notification_btn);
+        scheduledNotificationBtn = findViewById(R.id.scheduled_notification);
 
         // Step 1: Create the Notification channel
         createNotificationChannel();
@@ -66,6 +75,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+        // Creating a scheduled notification
+        // Step 1: Create the worker class, see MyWorker.class
+
+        // Step 2: Create workRequest
+        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                .build();
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 100, TimeUnit.DAYS).build();
+
+        // Step 3: Using WorkManager to enqueue the requests
+        scheduledNotificationBtn.setOnClickListener(v -> WorkManager.getInstance(this).enqueue(new OneTimeWorkRequest.Builder(MyWorker.class)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                .build()));
 
     }
 
