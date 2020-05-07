@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button basicNotificationBtn;
     private Button scheduledNotificationBtn;
+    private Button cancelAllNotificationsBtn;
+
     private final static String CHANNEL_ID = "CHANNEL_ID";
     public final static String ACTION_SNOOZE = "ACTION_SNOOZE";
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         basicNotificationBtn = findViewById(R.id.basic_notification_btn);
         scheduledNotificationBtn = findViewById(R.id.scheduled_notification);
+        cancelAllNotificationsBtn = findViewById(R.id.cancel_notification_btn);
 
         // Step 1: Create the Notification channel
         createNotificationChannel();
@@ -90,6 +93,10 @@ public class MainActivity extends AppCompatActivity {
                 .setInitialDelay(10, TimeUnit.SECONDS)
                 .build()));
 
+
+
+        // Cancel all scheduled notifications
+        cancelAllNotificationsBtn.setOnClickListener(v -> WorkManager.getInstance(this).cancelAllWork());
     }
 
     private void createNotificationChannel() {
